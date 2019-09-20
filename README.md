@@ -6,7 +6,7 @@ This is a small script that fetches my work shifts from Orquest, an employee man
 
 ## Usage
 
-The script should be straightforward to use. All that you need to do is to create a `config.ini` file in the folder where the script is located, similar to the example one (`config.ini.example`)
+The script should be straightforward to use. All that you need to do is to create a `config.ini` file in the folder where the script is located, similar to the example one [(`config.ini.example`)](src/config.ini.example)
 
 ```ini
 [orquest]
