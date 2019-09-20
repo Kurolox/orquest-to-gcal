@@ -1,0 +1,6 @@
+[orquest]
+url = the endpoint URL that was provided by orquest
+username = Your orquest username
+password = Your orquest password
+
+[google_calendar]
