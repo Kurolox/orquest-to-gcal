@@ -40,13 +40,12 @@ def get_orquest_data(url, username, password):
         "submit":       "Login"}
     session.post(url + "/authentication", data=login_payload)
 
-    # TODO: Generate date intervals for request path parameters
-    current_month = datetime.datetime.today()
+    current_date = datetime.datetime.today()
 
-    first_monday = calendar_month_range(current_month)
+    date = calendar_month_range(current_date)
 
     month_schedule = session.get(
-        url + "/rest/User/AssignmentsInfo/2019-08-26/2019-10-06")
+        url + f"/rest/User/AssignmentsInfo/{date[0]}/{date[1]}")
     return month_schedule.json()
 
 
@@ -54,9 +53,18 @@ def calendar_month_range(date):
     """Given a Datetime.date object, returns a tuple containing the first
     monday and the last sunday of the given month, in format YYYY-MM-DD."""
 
-    first_monday = min(week[-1] for week in calendar.monthcalendar(date.year, date.month))
-    print(first_monday)
-    last_sunday = max(week[-1] for week in calendar.monthcalendar(year, month))
+    # TODO: Properly calculate first monday and last sunday.
+    # Last sunday has to be the sunday of the last week of the month, while
+    # first monday has be the monday of the first week of the month.
+    first_monday = min(week[-1]
+                       for week in calendar.monthcalendar(date.year, date.month))
+    last_sunday = max(week[-1]
+                      for week in calendar.monthcalendar(date.year, date.month))
+
+    monday_date = None
+    sunday_date = date.replace(day=last_sunday).isoformat()
+
+    return monday_date, sunday_date
 
 
 if __name__ == "__main__":
