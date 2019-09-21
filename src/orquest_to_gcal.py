@@ -1,4 +1,6 @@
 import configparser
+import datetime
+import calendar
 from os import path
 import requests
 
@@ -23,7 +25,8 @@ def main():
             "The settings file is missing the [orquest] section. Aborting...")
         return
 
-    #TODO: Use Google Calendar API to add work shifts to calendar
+    # TODO: Use Google Calendar API to add work shifts to calendar
+
 
 def get_orquest_data(url, username, password):
     """Given the orquest endpoint URL, an username and a password, retrieve
@@ -36,10 +39,24 @@ def get_orquest_data(url, username, password):
         "remember-me": 	None,
         "submit":       "Login"}
     session.post(url + "/authentication", data=login_payload)
-    
-    #TODO: Generate date intervals for request path parameters
-    month_schedule = session.get(url + "/rest/User/AssignmentsInfo/2019-08-26/2019-10-06")
+
+    # TODO: Generate date intervals for request path parameters
+    current_month = datetime.datetime.today()
+
+    first_monday = calendar_month_range(current_month)
+
+    month_schedule = session.get(
+        url + "/rest/User/AssignmentsInfo/2019-08-26/2019-10-06")
     return month_schedule.json()
+
+
+def calendar_month_range(date):
+    """Given a Datetime.date object, returns a tuple containing the first
+    monday and the last sunday of the given month, in format YYYY-MM-DD."""
+
+    first_monday = min(week[-1] for week in calendar.monthcalendar(date.year, date.month))
+    print(first_monday)
+    last_sunday = max(week[-1] for week in calendar.monthcalendar(year, month))
 
 
 if __name__ == "__main__":
