@@ -139,4 +139,6 @@ pip-selfcheck.json
 
 # config.ini file, contains sensitive information
 
-config.ini
+src
+!src/config.ini.example
+!src/orquest_to_gcal.py
