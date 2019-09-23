@@ -4,3 +4,4 @@ username = Your orquest username
 password = Your orquest password
 
 [google_calendar]
+json_path = path to the generated API json file
