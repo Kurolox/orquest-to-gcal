@@ -142,3 +142,6 @@ pip-selfcheck.json
 src
 !src/config.ini.example
 !src/orquest_to_gcal.py
+
+# token created by google API, contains sensitive information
+token.pickle
