@@ -95,17 +95,10 @@ def add_shifts_to_calendar(work_json, json_path, calendar_id):
 
     service = build("calendar", "v3", credentials=creds)
 
-    # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + "Z"  # "Z" indicates UTC time
-    events_result = service.events().list(calendarId=calendar_id, timeMin=now,
-                                          maxResults=10, singleEvents=True,
-                                          orderBy="startTime").execute()
-    events = events_result.get("items", [])
-
     # Shifts where I've been included as a worker
     for shift in [day for day in work_json["assignments"] if day["presence"]["worked"]]:
         if not check_existing_event(calendar_id, service, shift["day"]):
-            create_event(calendar_id, service, shift)
+            create_event(calendar_id, service, shift["day"], shift["presence"])
 
 
 def check_existing_event(calendar, service, day):
@@ -121,13 +114,33 @@ def check_existing_event(calendar, service, day):
     query = service.events().list(calendarId=calendar, singleEvents=True,
                                   timeMin=start.isoformat(), timeMax=end.isoformat()).execute()
 
-
     return query.get("items", [])
 
 
-def create_event(calendar, service, day):
+def create_event(calendar, service, day, shift_info):
     """Adds an event to the configured calendar."""
-    return None
+
+    for frame in shift_info["timeFrames"]:
+
+        start = datetime.datetime(*[int(field) for field in day.split("-")],
+                                  int(frame["startMinuteDay"] / 60),
+                                  frame["startMinuteDay"] % 60,
+                                  tzinfo=datetime.datetime.utcnow().astimezone().tzinfo)
+        end = start + datetime.timedelta(minutes=frame["duration"])
+
+        payload = {
+            "summary": "Work",
+            "description": "Work shift generated automatically.",
+            "start": {
+                "dateTime": start.isoformat(),
+            },
+            "end": {
+                "dateTime": end.isoformat(),
+            }
+        }
+
+        service.events().insert(calendarId=calendar, body=payload).execute()
+        print(f"Created calendar event between {start.isoformat()} and {end.isoformat()}")
 
 
 if __name__ == "__main__":
