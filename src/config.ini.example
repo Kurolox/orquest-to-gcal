@@ -5,3 +5,4 @@ password = Your orquest password
 
 [google_calendar]
 json_path = path to the generated API json file
+calendar_id = ID of the calendar where you want to create the events
