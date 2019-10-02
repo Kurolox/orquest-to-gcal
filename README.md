@@ -32,4 +32,8 @@ username = Your orquest username
 password = Your orquest password
 
 [google_calendar]
+json_path = path to the google API credentials.json file
+calendar_id = ID of the calendar where you want to create the events
 ```
+
+After writting the configuration file, the first time you run the script you will be asked to authorize the application to access your calendars. This should only happen the first time you run it, so you can put the script in a cron job or systemd unit afterwards without any user input.
